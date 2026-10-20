@@ -1,0 +1,49 @@
+{
+  "name": "PagouCharge",
+  "type": "object",
+  "description": "Cobrança Pagou (Pix, boleto ou cartão) vinculada a um pedido. Gravada só pelas backend functions.",
+  "properties": {
+    "order_id": { "type": "string", "description": "ID do pedido no app" },
+    "user_email": { "type": "string", "description": "Dono do pedido" },
+    "method": { "type": "string", "enum": ["pix", "boleto", "card"] },
+    "environment": { "type": "string", "enum": ["sandbox", "production"] },
+    "amount_cents": { "type": "integer", "description": "Valor original em centavos" },
+    "status": {
+      "type": "string",
+      "enum": ["creating", "uncertain", "pending", "active", "paid", "partially_refunded", "refunded", "canceled", "failed", "expired"],
+      "default": "creating"
+    },
+    "pagou_id": { "type": "string", "description": "ID da cobrança na Pagou; vazio enquanto incerta" },
+    "pagou_status_raw": { "type": "string", "description": "Último status lido da Pagou" },
+    "pagou_transaction_id": { "type": "string" },
+    "pix_copy_paste": { "type": "string" },
+    "pix_qr_base64": { "type": "string" },
+    "pix_expires_at": { "type": "string", "format": "date-time" },
+    "linked_qrcode_id": { "type": "string", "description": "QR Code Pix vinculado ao boleto" },
+    "boleto_line": { "type": "string" },
+    "boleto_barcode": { "type": "string" },
+    "boleto_url": { "type": "string" },
+    "boleto_pdf_url": { "type": "string" },
+    "due_date": { "type": "string", "format": "date" },
+    "idempotency_key": { "type": "string", "description": "Cartão: chave da tentativa, gravada antes do envio" },
+    "request_snapshot": { "type": "string", "description": "Cartão: corpo enviado SEM o cartão, para repetir os mesmos bytes" },
+    "request_fingerprint": { "type": "string", "description": "Cartão: SHA-256 do corpo enviado" },
+    "card_customer_id": { "type": "string" },
+    "card_id": { "type": "string" },
+    "simulation_key": { "type": "string" },
+    "paid_amount_cents": { "type": "integer" },
+    "refunded_amount_cents": { "type": "integer" },
+    "paid_at": { "type": "string", "format": "date-time" },
+    "needs_review": { "type": "boolean", "default": false },
+    "last_error_code": { "type": "string" },
+    "last_error_message": { "type": "string" },
+    "created_window_start": { "type": "string", "format": "date-time", "description": "Instante antes do POST, usado na reconciliação" }
+  },
+  "required": ["order_id", "user_email", "method", "environment", "amount_cents", "status"],
+  "rls": {
+    "read": { "$or": [{ "user_email": "{{user.email}}" }, { "user_condition": { "role": "admin" } }] },
+    "create": { "user_condition": { "role": "admin" } },
+    "update": { "user_condition": { "role": "admin" } },
+    "delete": { "user_condition": { "role": "admin" } }
+  }
+}

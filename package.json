@@ -1,0 +1,14 @@
+{
+  "name": "pagou-base44",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Integração da API Pagou (Pix, boleto e cartão) com apps Base44.",
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "sync": "node scripts/sync-shared.mjs",
+    "test": "node scripts/sync-shared.mjs --check && node --test \"tests/**/*.test.ts\""
+  }
+}

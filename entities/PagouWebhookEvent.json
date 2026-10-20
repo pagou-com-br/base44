@@ -1,0 +1,21 @@
+{
+  "name": "PagouWebhookEvent",
+  "type": "object",
+  "description": "Notificação recebida da Pagou, gravada antes de aplicar efeitos. Contém dados pessoais do pagador: só admin lê.",
+  "properties": {
+    "event_key": { "type": "string", "description": "name:id:transaction_id, usado para deduplicar" },
+    "name": { "type": "string" },
+    "pagou_id": { "type": "string" },
+    "payload": { "type": "string", "description": "Corpo bruto, para auditoria" },
+    "processed": { "type": "boolean", "default": false },
+    "error": { "type": "string" },
+    "received_at": { "type": "string", "format": "date-time" }
+  },
+  "required": ["event_key", "name", "processed"],
+  "rls": {
+    "read": { "user_condition": { "role": "admin" } },
+    "create": { "user_condition": { "role": "admin" } },
+    "update": { "user_condition": { "role": "admin" } },
+    "delete": { "user_condition": { "role": "admin" } }
+  }
+}
