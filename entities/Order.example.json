@@ -1,0 +1,28 @@
+{
+  "name": "Order",
+  "type": "object",
+  "description": "Exemplo do pedido que a integração espera. Se o seu app já tem um pedido com outros nomes, ajuste o adaptador em shared/pagou.ts (loadOrderForUser e markOrderPaid) em vez de renomear seus campos.",
+  "properties": {
+    "user_email": { "type": "string" },
+    "total_cents": { "type": "integer", "description": "Total em centavos. Calculado no backend, nunca no navegador." },
+    "payment_status": { "type": "string", "enum": ["pending", "paid", "partially_refunded", "refunded"], "default": "pending" },
+    "pagou_charge_id": { "type": "string" },
+    "customer_name": { "type": "string" },
+    "customer_document": { "type": "string", "description": "CPF ou CNPJ" },
+    "customer_email": { "type": "string" },
+    "customer_phone": { "type": "string" },
+    "address_zip": { "type": "string" },
+    "address_street": { "type": "string" },
+    "address_number": { "type": "string" },
+    "address_neighborhood": { "type": "string" },
+    "address_city": { "type": "string" },
+    "address_state": { "type": "string" }
+  },
+  "required": ["user_email", "total_cents", "payment_status"],
+  "rls": {
+    "read": { "$or": [{ "user_email": "{{user.email}}" }, { "user_condition": { "role": "admin" } }] },
+    "create": { "user_email": "{{user.email}}" },
+    "update": { "user_condition": { "role": "admin" } },
+    "delete": { "user_condition": { "role": "admin" } }
+  }
+}
